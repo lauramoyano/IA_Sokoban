@@ -46,7 +46,7 @@ def readFile():
 ## esta clase nos permite identificar el estado actual de juego
 class State:
     def __init__(self, rows, columns, position, boxs_location, 
-                    board, actions, profundidad):
+                    board, actions, depth):
         self.rows = rows
         self.columns = columns
         self.position = position
@@ -54,7 +54,7 @@ class State:
         self.board = board
         self.actions = actions
         self.final_positions = self.boxsDestination()
-        self.profundidad = profundidad
+        self.depth = depth
 
     ## guardamos en un array las posiciones finales de donde deberían estar las cajas "X"
     def boxsDestination(self):
@@ -76,9 +76,9 @@ class State:
                 state = False
         return state
 
-    ## evalua que movimientos se pueden hacer dependiendo a la posicion del agente y de las cajas
+    ## evalua que movements se pueden hacer dependiendo a la posicion del agente y de las cajas
     def correctMovement(self):
-        ## se almacenan los movimientos que puede hacer el agente
+        ## se almacenan los movements que puede hacer el agente
         movement = []
         ## si arriba no hay una pared entonces suba
         if(self.board[self.position[0]-1][self.position[1]] != 'W'):
@@ -96,7 +96,7 @@ class State:
         if(self.board[self.position[0]][self.position[1]+1] != 'W'):
             movement.append('R')
 
-        ## movimientos que no puede hacer (recordemos que no se puede mover dos cajas a la vez):
+        ## movements que no puede hacer (recordemos que no se puede mover dos cajas a la vez):
 
         ## si arriba hay una caja y arriba de esa caja hay una pared o hay otra caja, no puede ir arriba
         if([self.position[0]-1,self.position[1]] in self.boxs_location 
@@ -178,10 +178,10 @@ class State:
                 return False
 
     
-    def updateState(self, movimiento):
+    def updateState(self, movement):
 
         # se cambia la posicion actual a [-1, 1] para ir arriba
-        if(movimiento == 'U'):
+        if(movement == 'U'):
             new_position_agent = [self.position[0]-1, self.position[1]]
             new_position_boxes = self.boxs_location.copy()
             #si la posicion actual del agente corresponde a la posicion de alguna caja
@@ -194,11 +194,11 @@ class State:
                         new_position_boxes[i] = [new_position_agent[0]-1, new_position_agent[1]]
             newactions = self.actions.copy()
             newactions.append('U')
-            # se retorna el estado actual con este movimiento
-            return State(self.rows, self.columns, new_position_agent, new_position_boxes, self.board, newactions, self.profundidad + 1)
+            # se retorna el estado actual con este movement
+            return State(self.rows, self.columns, new_position_agent, new_position_boxes, self.board, newactions, self.depth + 1)
         
         # se cambia la posicion actual a [+1, 1] para ir abajo
-        elif(movimiento == 'D'):
+        elif(movement == 'D'):
             new_position_agent = [self.position[0]+1, self.position[1]]
             new_position_boxes = self.boxs_location.copy()
             #si la posicion actual del agente corresponde a la posicion de alguna caja
@@ -211,11 +211,11 @@ class State:
                         new_position_boxes[i] = [new_position_agent[0]+1, new_position_agent[1]]
             newactions = self.actions.copy()
             newactions.append('D')
-            # se retorna el estado actual con este movimiento
-            return State(self.rows, self.columns, new_position_agent, new_position_boxes, self.board, newactions, self.profundidad + 1)
+            # se retorna el estado actual con este movement
+            return State(self.rows, self.columns, new_position_agent, new_position_boxes, self.board, newactions, self.depth + 1)
         
         # se cambia la posicion actual a [1, -1] para ir a la izquierda
-        elif(movimiento == 'L'):
+        elif(movement == 'L'):
             new_position_agent = [self.position[0], self.position[1]-1]
             new_position_boxes = self.boxs_location.copy()
             #si la posicion actual del agente corresponde a la posicion de alguna caja
@@ -228,11 +228,11 @@ class State:
                         new_position_boxes[i] = [new_position_agent[0], new_position_agent[1]-1]
             newactions = self.actions.copy()
             newactions.append('L')
-            # se retorna el estado actual con este movimiento
-            return State(self.rows, self.columns, new_position_agent, new_position_boxes, self.board, newactions, self.profundidad + 1)
+            # se retorna el estado actual con este movement
+            return State(self.rows, self.columns, new_position_agent, new_position_boxes, self.board, newactions, self.depth + 1)
         
         # se cambia la posicion actual a [1, +1] para ir a la derecha
-        elif(movimiento == 'R'):
+        elif(movement == 'R'):
             new_position_agent = [self.position[0], self.position[1]+1]
             new_position_boxes = self.boxs_location.copy()
             #si la posicion actual del agente corresponde a la posicion de alguna caja
@@ -245,8 +245,8 @@ class State:
                         new_position_boxes[i] = [new_position_agent[0], new_position_agent[1]+1]
             newactions = self.actions.copy()
             newactions.append('R')
-            # se retorna el estado actual con este movimiento
-            return State(self.rows, self.columns, new_position_agent, new_position_boxes, self.board, newactions, self.profundidad + 1,)
+            # se retorna el estado actual con este movement
+            return State(self.rows, self.columns, new_position_agent, new_position_boxes, self.board, newactions, self.depth + 1,)
 
 rows, columns, position, boxes_positions, board = readFile()
 
