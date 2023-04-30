@@ -401,7 +401,8 @@ def executeIDFS():
             limit = limit + 1
 
 
-output = listToString(BFS().actions) + "\n" + listToString(DFS().actions) + \
-    "\n" + listToString(executeIDFS().actions)
+output = listToString(DFS().actions) + "        DFS\n" + listToString(BFS().actions) + \
+    "                           BFS\n" + \
+    listToString(executeIDFS().actions) + "        IDFS"
 
 print(output)
