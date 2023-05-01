@@ -333,6 +333,7 @@ def BFS():
                 else:
                     queue.append(tempState)
     return currentState
+# 56
 
 
 def DFS():
@@ -390,7 +391,7 @@ def IDFS(limite):
 
 
 def executeIDFS():
-    limit = 0
+    limit = 10
     solution = False
     while (not solution):
         temp_solution = IDFS(limit)
