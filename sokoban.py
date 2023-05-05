@@ -1,6 +1,5 @@
 import sys
-from collections import deque
-
+from algoritmos import BFS, DFS, executeIDFS
 
 def listToString(s):
     str1 = ""
@@ -8,16 +7,7 @@ def listToString(s):
         str1 += element
     return str1
 
-
-def boxsLocationsToString(array):
-    string = ""
-    for i in range(0, len(array)):
-        string = string + "(" + str(array[i][0]) + "," + str(array[i][1]) + ")"
-    return string
-
 # leer el archivo y definir en board las filas, columnas, paredes y positiones de las cajas
-
-
 def readFile():
     file = open(sys.argv[1], 'r')
     Lines = file.readlines()
@@ -47,9 +37,7 @@ def readFile():
 
     return rows, columns, position, box_locations, board
 
-# esta clase nos permite identificar el estado actual de juego
-
-
+# esta clase nos permite identificar el estado actual de juego. Por lo que nos ayudará a identificar los nodos de nuestros árboles de búsqueda
 class State:
     def __init__(self, rows, columns, position, box_locations,
                  board, actions, depth):
@@ -76,6 +64,7 @@ class State:
                     final_positions.append([i, j])
         return final_positions
 
+    # evaluamos si el estado actual es solución
     def finishedGame(self):
         state = True
         for i in range(0, len(self.final_positions)):
@@ -142,7 +131,6 @@ class State:
 
         # este for itera sobre todas las cajas
         for i in range(0, len(self.box_locations)):
-
             # Si la caja tiene  a la derecha y abajo una pared perdió
             if (self.board[self.box_locations[i][0]][self.box_locations[i][1]+1] == 'W'
                and self.board[self.box_locations[i][0]+1][self.box_locations[i][1]] == 'W'):
@@ -209,8 +197,8 @@ class State:
             else:
                 return False
 
+    # método para cambiar el estado dada una acción
     def updateState(self, movement):
-
         # se cambia la position actual a [position_x - 1, position_y] para ir arriba
         if (movement == 'U'):
             new_position_agent = [self.position[0]-1, self.position[1]]
@@ -286,123 +274,12 @@ class State:
 
 rows, columns, position, boxes_positions, board = readFile()
 
+# Estado inicial con los datos obtenidos del nivel seleccionado
 initialState = State(rows, columns, position, boxes_positions, board, [], 0)
 
-# Búsqueda por amplitud
-
-
-def BFS():
-    # Creamos una cola para almacenar los nodos a evaluar
-    queue = deque()
-    queue.append(initialState)
-    visited = set()
-    while queue:
-        # Obtenemos el primer nodo a evaluar
-        currentState = queue.popleft()
-
-        # Añadimos la posición actual del personaje y de las cajas a un conjunto
-        # de nodos visitados, para luego evitar bucles
-        visited.add(str(currentState.position[0]) + "," + str(
-            currentState.position[1]) + boxsLocationsToString(currentState.box_locations))
-
-        # Verificamos si la depth del nodo es mayor a 64, si es así, no evaluamos el nodo y
-        # continuamos con los siguientes de la cola
-        if (currentState.depth > 64):
-            continue
-
-        # Verificamos si en el estado actual se ha perdido la partida, si es así,
-        # no evaluamos el nodo y continuamos con los siguientes de la cola
-        if (currentState.lostGame()):
-            continue
-
-        else:
-            # Verificamos si el nodo actual es solución, si es así, terminamos el ciclo
-            if (currentState.finishedGame()):
-                break
-
-            # Realizamos las posibles acciones del nodo actual y agregamos los nuevos
-            # nodos que no se han visitado, a la cola
-            movements = currentState.correctMovements()
-            for movement in movements:
-                tempState = currentState.updateState(movement)
-
-                # Verificamos si el nodo actual se ha visitado, si es así,
-                # continuamos con los siguientes de la cola
-                if (str(tempState.position[0]) + "," + str(tempState.position[1]) + boxsLocationsToString(tempState.box_locations) in visited):
-                    continue
-                else:
-                    queue.append(tempState)
-    return currentState
-
-
-def DFS():
-    stack = deque([initialState])
-    visited = set()
-    while stack:
-        currentState = stack.pop()
-        if (currentState.depth > 64):
-            continue
-        visited.add(str(currentState.position[0]) + "," + str(
-            currentState.position[1]) + boxsLocationsToString(currentState.box_locations))
-        if (currentState.lostGame()):
-            continue
-        else:
-            if (currentState.finishedGame()):
-                break
-            movements = currentState.correctMovements()
-            movements.reverse()
-            for movement in movements:
-                tempState = currentState.updateState(movement)
-                if (str(tempState.position[0]) + "," + str(tempState.position[1]) + boxsLocationsToString(tempState.box_locations) in visited):
-                    continue
-                else:
-                    stack.append(tempState)
-    return currentState
-
-
-def IDFS(limite):
-    stack = deque()
-    stack.append(initialState)
-    visited = set()
-    depth = 0
-    while stack:
-        currentState = stack.pop()
-        if (currentState.depth == limite):
-            return currentState
-        if (currentState.depth > 64):
-            continue
-        visited.add(str(currentState.position[0]) + "," + str(
-            currentState.position[1]) + boxsLocationsToString(currentState.box_locations))
-        if (currentState.lostGame()):
-            continue
-        else:
-            if (currentState.finishedGame()):
-                break
-            movements = currentState.correctMovements()
-            movements.reverse()
-            for movement in movements:
-                tempState = currentState.updateState(movement)
-                if (str(tempState.position[0]) + "," + str(tempState.position[1]) + boxsLocationsToString(tempState.box_locations) in visited):
-                    continue
-                else:
-                    stack.append(tempState)
-    return currentState
-
-
-def executeIDFS():
-    limit = 10
-    solution = False
-    while (not solution):
-        temp_solution = IDFS(limit)
-        if (temp_solution.finishedGame()):
-            solution = True
-            return temp_solution
-        else:
-            limit = limit + 1
-
-
-output = listToString(DFS().actions) + "  " + str(DFS().depth)+ " DFS\n" + listToString(BFS().actions) + "  " + str(BFS().depth)+\
-    " BFS\n" + \
-    listToString(executeIDFS().actions) + "  " + str(executeIDFS().depth) + " IDFS"
+# Salida
+output = listToString(DFS(initialState).actions) + "\n" + listToString(BFS(initialState).actions) + \
+    "\n" + \
+    listToString(executeIDFS(initialState).actions)
 
 print(output)
