@@ -1,7 +1,5 @@
 import sys
-from collections import deque
 from algoritmos import BFS, DFS, executeIDFS
-
 
 def listToString(s):
     str1 = ""
@@ -9,16 +7,7 @@ def listToString(s):
         str1 += element
     return str1
 
-
-def boxsLocationsToString(array):
-    string = ""
-    for i in range(0, len(array)):
-        string = string + "(" + str(array[i][0]) + "," + str(array[i][1]) + ")"
-    return string
-
 # leer el archivo y definir en board las filas, columnas, paredes y positiones de las cajas
-
-
 def readFile():
     file = open(sys.argv[1], 'r')
     Lines = file.readlines()
@@ -48,9 +37,7 @@ def readFile():
 
     return rows, columns, position, box_locations, board
 
-# esta clase nos permite identificar el estado actual de juego
-
-
+# esta clase nos permite identificar el estado actual de juego. Por lo que nos ayudará a identificar los nodos de nuestros árboles de búsqueda
 class State:
     def __init__(self, rows, columns, position, box_locations,
                  board, actions, depth):
@@ -77,6 +64,7 @@ class State:
                     final_positions.append([i, j])
         return final_positions
 
+    # evaluamos si el estado actual es solución
     def finishedGame(self):
         state = True
         for i in range(0, len(self.final_positions)):
@@ -143,7 +131,6 @@ class State:
 
         # este for itera sobre todas las cajas
         for i in range(0, len(self.box_locations)):
-
             # Si la caja tiene  a la derecha y abajo una pared perdió
             if (self.board[self.box_locations[i][0]][self.box_locations[i][1]+1] == 'W'
                and self.board[self.box_locations[i][0]+1][self.box_locations[i][1]] == 'W'):
@@ -210,8 +197,8 @@ class State:
             else:
                 return False
 
+    # método para cambiar el estado dada una acción
     def updateState(self, movement):
-
         # se cambia la position actual a [position_x - 1, position_y] para ir arriba
         if (movement == 'U'):
             new_position_agent = [self.position[0]-1, self.position[1]]
@@ -287,8 +274,10 @@ class State:
 
 rows, columns, position, boxes_positions, board = readFile()
 
+# Estado inicial con los datos obtenidos del nivel seleccionado
 initialState = State(rows, columns, position, boxes_positions, board, [], 0)
 
+# Salida
 output = listToString(DFS(initialState).actions) + "\n" + listToString(BFS(initialState).actions) + \
     "\n" + \
     listToString(executeIDFS(initialState).actions)

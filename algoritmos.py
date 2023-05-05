@@ -6,6 +6,7 @@ def boxsLocationsToString(array):
         string = string + "(" + str(array[i][0]) + "," + str(array[i][1]) + ")"
     return string
 
+# Búsqueda preferente por amplitud
 def BFS(initialState):
     # Creamos una cola para almacenar los nodos a evaluar
     queue = deque()
@@ -49,6 +50,7 @@ def BFS(initialState):
                     queue.append(tempState)
     return currentState
 
+# Búsqueda preferente por profundidad
 def DFS(initialState):
     stack = deque([initialState])
     visited = set()
@@ -73,6 +75,7 @@ def DFS(initialState):
                     stack.append(tempState)
     return currentState
 
+# Búsqueda preferente por profundidad iterativa
 def IDFS(initialState, limite):
     stack = deque()
     stack.append(initialState)
