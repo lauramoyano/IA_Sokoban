@@ -282,4 +282,9 @@ output = listToString(DFS(initialState).actions) + "\n" + listToString(BFS(initi
     "\n" + \
     listToString(executeIDFS(initialState).actions)
 
+# Salida
+output = listToString(DFS(initialState).actions) + f"   DFS depth: {DFS(initialState).depth} \n" + listToString(BFS(initialState).actions) + \
+    f"   BFS depth: {BFS(initialState).depth} \n" + \
+    listToString(executeIDFS(initialState).actions) + f"   IDFS depth: {executeIDFS(initialState).depth} \n"
+
 print(output)
