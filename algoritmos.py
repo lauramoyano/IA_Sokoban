@@ -76,14 +76,14 @@ def DFS(initialState):
     return currentState
 
 # Búsqueda preferente por profundidad iterativa
-def IDFS(initialState, limite):
+def IDFS(initialState, limit):
     stack = deque()
     stack.append(initialState)
     visited = set()
     depth = 0
     while stack:
         currentState = stack.pop()
-        if (currentState.depth == limite):
+        if (currentState.depth == limit):
             return currentState
         if (currentState.depth > 64):
             continue
