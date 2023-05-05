@@ -390,7 +390,7 @@ def IDFS(limite):
 
 
 def executeIDFS():
-    limit = 0
+    limit = 10
     solution = False
     while (not solution):
         temp_solution = IDFS(limit)
@@ -401,8 +401,8 @@ def executeIDFS():
             limit = limit + 1
 
 
-output = listToString(DFS().actions) + "        DFS\n" + listToString(BFS().actions) + \
-    "                           BFS\n" + \
-    listToString(executeIDFS().actions) + "        IDFS"
+output = listToString(DFS().actions) + "  " + str(DFS().depth)+ " DFS\n" + listToString(BFS().actions) + "  " + str(BFS().depth)+\
+    " BFS\n" + \
+    listToString(executeIDFS().actions) + "  " + str(executeIDFS().depth) + " IDFS"
 
 print(output)
